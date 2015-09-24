@@ -7,9 +7,19 @@ from robogame_engine.geometry import Point
 
 
 class MyBee(Bee):
+    all_bees = []
 
     def on_born(self):
-        self.move_at(target=self.flowers[0])
+        for flower in self.flowers:
+            if flower.honey > 0:
+                for bees in MyBee.all_bees:
+                    if bees.my_flower == flower:
+                        break
+                else:
+                    self.my_flower = flower
+                    break
+        self.move_at(target=self.my_flower)
+        MyBee.all_bees.append(self)
 
     def on_stop_at_flower(self, flower):
         """Обработчик события 'остановка у цветка' """
@@ -35,6 +45,7 @@ class MyBee(Bee):
             if i.honey > 0:
                 self.move_at(target=i)
                 break
+
 
 
     # self.flowers - список всех цветков
