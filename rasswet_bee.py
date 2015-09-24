@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# здесь разместить класс пчелы
+# здесь разместить класс +пчелы
 from beegarden.core import Bee, Beegarden
 from robogame_engine.geometry import Point
 
