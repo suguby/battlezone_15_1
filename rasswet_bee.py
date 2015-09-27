@@ -6,20 +6,45 @@ from beegarden.core import Bee, Beegarden
 from robogame_engine.geometry import Point
 
 
-class MyBee(Bee):
+class MyBeeRasswet(Bee):
     all_bees = []
 
     def on_born(self):
+
+
+        xmy_behive = self.my_beehive.x
+        ymy_behive = self.my_beehive.y
+        dict_dist_flowers = {}
+        for flower in self.flowers:
+            xx = flower.x
+            yy = flower.y
+            dist = (abs(xx-xmy_behive)**2 + abs(yy-ymy_behive)**2)**0.5
+            #print xx, '', yy, ' ', dist
+            dict_dist_flowers[flower] = dist
+
+        #print xmy_behive
+        #print ymy_behive
+
+        sorted_keys = sorted(dict_dist_flowers, lambda x, y: cmp(dict_dist_flowers[x], dict_dist_flowers[y]))
+
+        j = 0
+        for i in sorted_keys:
+            #print i, dict_dist_flowers[i]
+            self.flowers.insert(j,i)
+            j += 1
+
+
+
         for flower in self.flowers:
             if flower.honey > 0:
-                for bees in MyBee.all_bees:
+                for bees in MyBeeRasswet.all_bees:
                     if bees.my_flower == flower:
                         break
                 else:
                     self.my_flower = flower
                     break
         self.move_at(target=self.my_flower)
-        MyBee.all_bees.append(self)
+        MyBeeRasswet.all_bees.append(self)
 
     def on_stop_at_flower(self, flower):
         """Обработчик события 'остановка у цветка' """
@@ -74,7 +99,7 @@ if __name__ == '__main__':
     )
 
 
-    bee = MyBee()
+    bee = MyBeeRasswet()
     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
 
     beegarden.go()
