@@ -10,6 +10,11 @@ class MyBee(Bee):
     all_bees = []
 
     def on_born(self):
+        self._get_my_flower()
+        self.move_at(target=self.my_flower)
+        MyBee.all_bees.append(self)
+
+    def _get_my_flower(self):
         for flower in self.flowers:
             if flower.honey > 0:
                 for bees in MyBee.all_bees:
@@ -18,8 +23,6 @@ class MyBee(Bee):
                 else:
                     self.my_flower = flower
                     break
-        self.move_at(target=self.my_flower)
-        MyBee.all_bees.append(self)
 
     def on_stop_at_flower(self, flower):
         """Обработчик события 'остановка у цветка' """
