@@ -6,23 +6,37 @@ from beegarden.core import Bee, Beegarden
 from robogame_engine.geometry import Point
 
 
-class MyBee(Bee):
+class AlexBee(Bee):
     all_bees = []
+    perspective_flowers = []
 
     def on_born(self):
+        AlexBee.perspective_flowers = self.flowers[:]
+        self.choice_flower()
+        self.move_at(target=self.my_flower)
+        AlexBee.all_bees.append(self)
+
+    def choice_flower(self):
         for flower in self.flowers:
             if flower.honey > 0:
-                for bees in MyBee.all_bees:
-                    if bees.my_flower == flower:
+                for bee in AlexBee.all_bees:
+                    if bee == self: continue
+                    if bee.my_flower == flower:
                         break
                 else:
                     self.my_flower = flower
                     break
-        self.move_at(target=self.my_flower)
-        MyBee.all_bees.append(self)
+        else:
+            if not self.near(self.my_beehive): # Иначе, при пустых цветах пчелы пытаются летать из улья в улей (из своего в свой же)
+                self.move_at(target=self.my_beehive)
+
+#    def nearest_flower(self):
+
 
     def on_stop_at_flower(self, flower):
         """Обработчик события 'остановка у цветка' """
+        self.my_flower = None
+
         self.load_honey_from(source=flower)
 
     def on_stop_at_beehive(self, beehive):
@@ -32,20 +46,16 @@ class MyBee(Bee):
     def on_honey_loaded(self):
         """Обработчик события 'мёд загружен' """
         if self.honey < 100:
-            for i in self.flowers:
-                if i.honey > 0:
-                    self.move_at(target=i)
-                    break
-
+            self.choice_flower()
+            if self.my_flower:
+                self.move_at(target=self.my_flower)
         else: self.move_at(target=self.my_beehive)
 
     def on_honey_unloaded(self):
         """Обработчик события 'мёд разгружен' """
-        for i in self.flowers:
-            if i.honey > 0:
-                self.move_at(target=i)
-                break
-
+        self.choice_flower()
+        if self.my_flower:
+            self.move_at(target=self.my_flower)
 
 
     # self.flowers - список всех цветков
@@ -64,17 +74,17 @@ class MyBee(Bee):
     #    """полностью заполнен?"""
 
 
-if __name__ == '__main__':
-    beegarden = Beegarden(
-        name="My little garden",
-        flowers_count=5,
-        speed=5,
-        # field=(800, 600),
-        # theme_mod_path='default_theme',
-    )
-
-
-    bee = MyBee()
-    bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
-
-    beegarden.go()
+# if __name__ == '__main__':
+#     beegarden = Beegarden(
+#         name="My little garden",
+#         flowers_count=5,
+#         speed=5,
+#         # field=(800, 600),
+#         # theme_mod_path='default_theme',
+#     )
+#
+#
+#     bee = AlexBee()
+#     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
+#
+#     beegarden.go()
