@@ -3,6 +3,7 @@
 
 from beegarden.core import Bee, Beegarden
 from robogame_engine.geometry import Point
+from robogame_engine.theme import theme
 
 # теперь научи их кусаться - причем при укусе пчела теряет здоровье - задается константами
 # default_theme/__init__.py:20
@@ -12,15 +13,47 @@ from robogame_engine.geometry import Point
 
 class AlexBee(Bee):
     all_bees = []
-    perspective_flowers = []
-
-
 
     def on_born(self):
+        self.in_hunt = True
+        self.kill_them_all()
         self.choice_flower()
         self.move_at(target=self.my_flower)
         AlexBee.all_bees.append(self)
 
+
+    def there_live_bees(self):
+        for bee in self.bees:
+            if isinstance(bee, self.__class__) or bee.dead:
+                continue
+            return True
+        return False
+
+    def kill_them_all(self):
+        if self._health <= theme.STING_POWER:
+            self.move_at(self.my_beehive)
+            return
+        near_bee, min_distance = None, 1000000
+        for bee in self.bees:
+            if isinstance(bee, self.__class__) or bee.dead or bee.distance_to(bee.my_beehive) < theme.BEEHIVE_SAFE_DISTANCE:
+                continue
+            distance_to_bee = self.distance_to(bee)
+            if distance_to_bee < min_distance:
+                near_bee = bee
+                min_distance = distance_to_bee
+        if near_bee is None:
+            if not self.there_live_bees():
+                self.in_hunt = False
+            self.move_at(self.flowers[0])
+        else:
+            if min_distance < theme.NEAR_RADIUS:
+                self.sting(near_bee)
+            else:
+                self.move_at(near_bee)
+
+    def on_hearbeat(self):
+        if self.in_hunt:
+            self.kill_them_all()
 
     def choice_flower(self):
         for flower in self.flowers:
