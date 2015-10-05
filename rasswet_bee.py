@@ -25,14 +25,27 @@ class MyBeeRasswet(Bee):
         #print xmy_behive
         #print ymy_behive
 
+        # здесь можно заюзать OrderedDict https://docs.python.org/2.7/library/collections.html?highlight=ordereddict#collections.OrderedDict
+
         sorted_keys = sorted(dict_dist_flowers, lambda x, y: cmp(dict_dist_flowers[x], dict_dist_flowers[y]))
 
         j = 0
         for i in sorted_keys:
             #print i, dict_dist_flowers[i]
             self.flowers.insert(j,i)
+            # печалька в том, что self.flowers - системный обьект, а ты его изменяешь
+            # согласен, что косяк архитектуры, исправлю... тогда твой код перестанет работать
+            # заведи свой список цветков, например self.flowers_by_distance
             j += 1
 
+        # а вообще никто не запрещает к обьекту Цветок поставить свой аттрибут, смотри
+        for flower in self.flowers:
+            xx = flower.x
+            yy = flower.y
+            dist = (abs(xx-xmy_behive)**2 + abs(yy-ymy_behive)**2)**0.5
+            flower.rasswet_dist = dist
+        # и тогда получить список цветов, упорядоченный по расстоянию до улья просто:
+        flowers_by_distance = sorted(self.flowers, key=lambda flower: flower.rasswet_dist)
 
 
         for flower in self.flowers:

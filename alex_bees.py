@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# здесь разместить класс пчелы
 from beegarden.core import Bee, Beegarden
 from robogame_engine.geometry import Point
 
+# теперь научи их кусаться - причем при укусе пчела теряет здоровье - задается константами
+# default_theme/__init__.py:20
+# но у своего улья действует защита - здоровье не теряется - "я в домике"
+# предлагаю летать по двое-трое :) а если здоровья мало - лететь домой
 
 
 class AlexBee(Bee):
@@ -23,14 +26,18 @@ class AlexBee(Bee):
         for flower in self.flowers:
             if flower.honey > 0:
                 for bee in AlexBee.all_bees:
-                    if bee == self: continue
+                    if bee == self:
+                        # не экономь на строках = снижает читаемость кода
+                        continue
                     if bee.my_flower == flower:
                         break
                 else:
                     self.my_flower = flower
                     break
         else:
-            if not self.near(self.my_beehive): # Иначе, при пустых цветах пчелы пытаются летать из улья в улей (из своего в свой же)
+            if not self.near(self.my_beehive):
+                # Иначе, при пустых цветах пчелы пытаются летать из улья в улей (из своего в свой же)
+                # и пусть летают :) но и так - норм
                 self.move_at(target=self.my_beehive)
 
 #    def nearest_flower(self):
@@ -53,7 +60,8 @@ class AlexBee(Bee):
             self.choice_flower()
             if self.my_flower:
                 self.move_at(target=self.my_flower)
-        else: self.move_at(target=self.my_beehive)
+        else:
+            self.move_at(target=self.my_beehive)
 
     def on_honey_unloaded(self):
         """Обработчик события 'мёд разгружен' """
