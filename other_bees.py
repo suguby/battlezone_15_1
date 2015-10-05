@@ -26,7 +26,8 @@ class OtherBee(Bee):
                 if i.honey > 0:
                     self.move_at(target=i)
                     break
-
+            else:
+                self.move_at(target=self.my_beehive)
         else: self.move_at(target=self.my_beehive)
 
     def on_honey_unloaded(self):
@@ -53,17 +54,17 @@ class OtherBee(Bee):
     #    """полностью заполнен?"""
 
 
-if __name__ == '__main__':
-    beegarden = Beegarden(
-        name="My little garden",
-        flowers_count=5,
-        speed=5,
-        # field=(800, 600),
-        # theme_mod_path='default_theme',
-    )
-
-
-    bee = OtherBee()
-    bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
-
-    beegarden.go()
+# if __name__ == '__main__':
+#     beegarden = Beegarden(
+#         name="My little garden",
+#         flowers_count=5,
+#         speed=5,
+#         # field=(800, 600),
+#         # theme_mod_path='default_theme',
+#     )
+#
+#
+#     bee = OtherBee()
+#     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
+#
+#     beegarden.go()

@@ -6,15 +6,18 @@ from beegarden.core import Bee, Beegarden
 from robogame_engine.geometry import Point
 
 
+
 class AlexBee(Bee):
     all_bees = []
     perspective_flowers = []
 
+
+
     def on_born(self):
-        AlexBee.perspective_flowers = self.flowers[:]
         self.choice_flower()
         self.move_at(target=self.my_flower)
         AlexBee.all_bees.append(self)
+
 
     def choice_flower(self):
         for flower in self.flowers:
@@ -35,6 +38,7 @@ class AlexBee(Bee):
 
     def on_stop_at_flower(self, flower):
         """Обработчик события 'остановка у цветка' """
+#        self.sting()
         self.my_flower = None
 
         self.load_honey_from(source=flower)
